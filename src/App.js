@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Mapcomponent from "./components/Mapcomponent";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+  const [vehiclePosition, setVehiclePosition] = useState({ lat: 51.505, lng: -0.09 });
+  const [route, setRoute] = useState([{ lat: 51.505, lng: -0.09 }]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVehiclePosition((prev) => {
+        const newPosition = {
+          lat: prev.lat + 0.001,
+          lng: prev.lng + 0.001,
+        };
+        setRoute((prevRoute) => [...prevRoute, newPosition]);
+        return newPosition;
+      });
+    }, 3000); // Update every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return <Mapcomponent vehiclePosition={vehiclePosition} route={route} />;
+};
 
 export default App;
